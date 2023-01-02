@@ -31,10 +31,14 @@ export class UsersService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    const existingUser = this.findOne(id);
-    if (existingUser) {
-      console.log('test');
-    }
+    const updateuser = await this.prisma.users.update({
+      where: {
+        Id: id,
+      },
+      data: updateUserDto,
+    });
+
+    return updateuser;
   }
 
   async remove(id: number) {
