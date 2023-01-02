@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -9,10 +6,64 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
-model User {
-  id    Int     @default(autoincrement()) @id
-  fname  String
-  lname String
-  role String
-  
+
+model Components {
+  id                              Int                               @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  ComponentsName                  String                            @db.VarChar(45)
+  Components_has_ComponentsAction Components_has_ComponentsAction[]
+}
+
+model ComponentsAction {
+  id                              Int                               @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  Action_Name                     String                            @db.VarChar(45)
+  Components_has_ComponentsAction Components_has_ComponentsAction[]
+}
+
+model Components_has_ComponentsAction {
+  Id                                        Int                                         @id @unique(map: "Id_UNIQUE") @default(autoincrement())
+  Components_id                             Int
+  ComponentsAction_id                       Int
+  Components                                Components                                  @relation(fields: [Components_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_Components_has_ComponentsAction_Components1")
+  ComponentsAction                          ComponentsAction                            @relation(fields: [ComponentsAction_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_Components_has_ComponentsAction_ComponentsAction1")
+  Roles_has_Components_has_ComponentsAction Roles_has_Components_has_ComponentsAction[]
+
+  @@index([Components_id], map: "fk_Components_has_ComponentsAction_Components1_idx")
+  @@index([ComponentsAction_id], map: "fk_Components_has_ComponentsAction_ComponentsAction1_idx")
+}
+
+model Roles {
+  Id                                        Int                                         @id @unique(map: "Id_UNIQUE") @default(autoincrement())
+  RoleType                                  String                                      @db.VarChar(45)
+  Roles_has_Components_has_ComponentsAction Roles_has_Components_has_ComponentsAction[]
+  Users_has_Roles                           Users_has_Roles[]
+}
+
+model Roles_has_Components_has_ComponentsAction {
+  Roles_Id                           Int
+  Components_has_ComponentsAction_Id Int
+  Components_has_ComponentsAction    Components_has_ComponentsAction @relation(fields: [Components_has_ComponentsAction_Id], references: [Id], onDelete: NoAction, onUpdate: NoAction, map: "fk_Roles_has_Components_has_ComponentsAction_Components_has_C1")
+  Roles                              Roles                           @relation(fields: [Roles_Id], references: [Id], onDelete: NoAction, onUpdate: NoAction, map: "fk_Roles_has_Components_has_ComponentsAction_Roles1")
+
+  @@id([Roles_Id, Components_has_ComponentsAction_Id])
+  @@index([Components_has_ComponentsAction_Id], map: "fk_Roles_has_Components_has_ComponentsAction_Components_has_idx")
+  @@index([Roles_Id], map: "fk_Roles_has_Components_has_ComponentsAction_Roles1_idx")
+}
+
+model Users {
+  Id              Int               @id @unique(map: "Id_UNIQUE") @default(autoincrement())
+  fname           String            @db.VarChar(45)
+  lname           String            @db.VarChar(45)
+  Role            String            @db.VarChar(45)
+  Users_has_Roles Users_has_Roles[]
+}
+
+model Users_has_Roles {
+  Users_Id Int
+  Roles_Id Int
+  Roles    Roles @relation(fields: [Roles_Id], references: [Id], onDelete: NoAction, onUpdate: NoAction, map: "fk_Users_has_Roles_Roles1")
+  Users    Users @relation(fields: [Users_Id], references: [Id], onDelete: NoAction, onUpdate: NoAction, map: "fk_Users_has_Roles_Users1")
+
+  @@id([Users_Id, Roles_Id])
+  @@index([Roles_Id], map: "fk_Users_has_Roles_Roles1_idx")
+  @@index([Users_Id], map: "fk_Users_has_Roles_Users1_idx")
 }
