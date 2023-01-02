@@ -18,19 +18,16 @@ export class UsersService {
   }
 
   async findOne(id: number) {
-    let findUser;
-    try {
-      findUser = await this.prisma.users.findUnique({
-        where: {
-          Id: id,
-        },
-      });
-    } catch (error) {
-      if (error instanceof NotFoundException) {
-        return console.log('no');
-      }
+    const findUser = await this.prisma.users.findUnique({
+      where: {
+        Id: id,
+      },
+    });
+    if (!findUser) {
+      throw new NotFoundException(`Id ${id} not found `);
+    } else {
+      return findUser;
     }
-    return findUser;
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
