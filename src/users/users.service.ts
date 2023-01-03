@@ -5,6 +5,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
+  // ctx = host.switchToHttp();
   constructor(private prisma: PrismaService) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -45,6 +46,15 @@ export class UsersService {
   }
 
   async remove(id: number) {
-    return await `This action removes a #${id} user`;
+    try {
+      await this.prisma.users.delete({
+        where: {
+          Id: id,
+        },
+      });
+      return 'user deleted';
+    } catch (error) {
+      throw new NotFoundException(`user ${id} not found `);
+    }
   }
 }
