@@ -31,14 +31,24 @@ export class UsersService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    const updateuser = await this.prisma.users.update({
-      where: {
-        Id: id,
-      },
-      data: updateUserDto,
-    });
+    try {
+      const updateuser = await this.prisma.users.update({
+        where: {
+          Id: id,
+        },
+        data: updateUserDto,
+      });
+      return updateuser;
+    } catch (error) {
+      throw new NotFoundException(`user ${id} not found `);
+    }
 
-    return updateuser;
+    // if (updateuser.Id == id) {
+    //   return updateuser;
+    // } else {
+    //   console.log('test');
+    //   // throw new NotFoundException(`Id ${id} not found `);
+    // }
   }
 
   async remove(id: number) {
