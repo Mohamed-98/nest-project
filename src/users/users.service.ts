@@ -42,13 +42,6 @@ export class UsersService {
     } catch (error) {
       throw new NotFoundException(`user ${id} not found `);
     }
-
-    // if (updateuser.Id == id) {
-    //   return updateuser;
-    // } else {
-    //   console.log('test');
-    //   // throw new NotFoundException(`Id ${id} not found `);
-    // }
   }
 
   async remove(id: number) {
