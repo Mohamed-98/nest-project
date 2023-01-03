@@ -23,7 +23,7 @@ export class UsersService {
         Id: id,
       },
     });
-    if (!findUser) {
+    if (findUser === null) {
       throw new NotFoundException(`Id ${id} not found `);
     } else {
       return findUser;
