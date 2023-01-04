@@ -1,4 +1,4 @@
-import { IsHash, IsNotEmpty } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -7,6 +7,6 @@ export class CreateUserDto {
   lname: string;
   @IsNotEmpty()
   Role: string;
-  // @IsHash()
+  @IsNotEmpty()
   password: string;
 }
