@@ -54,6 +54,7 @@ model Users {
   fname           String            @db.VarChar(45)
   lname           String            @db.VarChar(45)
   Role            String            @db.VarChar(45)
+  password        String            @db.VarChar(45)
   Users_has_Roles Users_has_Roles[]
 }
 
