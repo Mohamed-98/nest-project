@@ -17,23 +17,10 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post('signup')
-  @UsePipes(new ValidationPipe())
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.signup(createUserDto);
-  }
-  @Post('signin')
-  signin(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.signin(createUserDto);
-  }
   @Get()
   findAll() {
     return this.usersService.findAll();
   }
-  // @Get()
-  // signin() {
-  //   return this.usersService.signin();
-  // }
 
   @Get(':id')
   findOne(@Param('id') id: string) {

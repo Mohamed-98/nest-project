@@ -35,7 +35,7 @@ model Roles {
   Id                                        Int                                         @id @unique(map: "Id_UNIQUE") @default(autoincrement())
   RoleType                                  String                                      @db.VarChar(45)
   Roles_has_Components_has_ComponentsAction Roles_has_Components_has_ComponentsAction[]
-  Roles_has_Users                           Roles_has_Users[]
+  Users_has_Roles                           Users_has_Roles[]
 }
 
 model Roles_has_Components_has_ComponentsAction {
@@ -50,20 +50,21 @@ model Roles_has_Components_has_ComponentsAction {
 }
 
 model Users {
-  id              Int               @id @unique(map: "Id_UNIQUE") @default(autoincrement())
-  username        String            @db.VarChar(45)
+  Id              Int               @id @unique(map: "Id_UNIQUE") @default(autoincrement())
+  UserName        String            @db.VarChar(45)
   Role            String            @db.VarChar(45)
-  password        String            @db.VarChar(128)
-  Roles_has_Users Roles_has_Users[]
+  Hash            String            @db.VarChar(128)
+  Password        String            @db.VarChar(128)
+  Users_has_Roles Users_has_Roles[]
 }
 
-model Roles_has_Users {
+model Users_has_Roles {
+  Users_Id Int
   Roles_Id Int
-  Users_id Int
-  Roles    Roles @relation(fields: [Roles_Id], references: [Id], onDelete: NoAction, onUpdate: NoAction, map: "fk_Roles_has_Users_Roles1")
-  Users    Users @relation(fields: [Users_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_Roles_has_Users_Users1")
+  Roles    Roles @relation(fields: [Roles_Id], references: [Id], onDelete: NoAction, onUpdate: NoAction, map: "fk_Users_has_Roles_Roles1")
+  Users    Users @relation(fields: [Users_Id], references: [Id], onDelete: NoAction, onUpdate: NoAction, map: "fk_Users_has_Roles_Users1")
 
-  @@id([Roles_Id, Users_id])
-  @@index([Roles_Id], map: "fk_Roles_has_Users_Roles1_idx")
-  @@index([Users_id], map: "fk_Roles_has_Users_Users1_idx")
+  @@id([Users_Id, Roles_Id])
+  @@index([Roles_Id], map: "fk_Users_has_Roles_Roles1_idx")
+  @@index([Users_Id], map: "fk_Users_has_Roles_Users1_idx")
 }
