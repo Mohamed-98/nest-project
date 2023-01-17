@@ -9,7 +9,8 @@ import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { AuthDto } from './dto';
+// import { CreateUserDto } from 'src/users/dto/create-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -20,9 +21,9 @@ export class AuthService {
     private config: ConfigService,
   ) {}
 
-  async signup(createUserDto: CreateUserDto) {
+  async signup(createUserDto: AuthDto) {
     // generate the password hash
-    const hash = await argon.hash(createUserDto.password);
+    const hash = await argon.hash(createUserDto.hash);
     // save the new user in the db
     try {
       const user = await this.prisma.users.create({
@@ -42,7 +43,7 @@ export class AuthService {
       throw error;
     }
   }
-  async signin(dto: CreateUserDto) {
+  async signin(dto: AuthDto) {
     // find the user by id
     const user = await this.prisma.users.findUnique({
       where: {
@@ -58,6 +59,10 @@ export class AuthService {
     if (!pwMatches) throw new ForbiddenException('Credentials incorrect');
     return this.signToken(user.id, user.password);
   }
+
+  // logout() {}
+
+  // refresh(){}
   async signToken(
     userId: number,
     password: string,
